@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css">
+  <title>WhatsApp to HTML</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon.png" />
+  <meta name="apple-mobile-web-app-status-bar" content="#151515" />
+  <meta name="theme-color" content="#328d2b" />
+</head>
+
+<body>
+  <header>
+    <div style="display: flex; justify-content: center; gap: 10px; align-items: center; margin: 10px 0px">
+      <img src="./icon.svg" style="height: 48px; width: 48px; margin: 0">
+      <h1 style="margin: 0">WhatsApp to HTML</h1>
+    </div>
+    <br>
+    <i>Export a WhatsApp chat to an HTML webpage, that can be displayed anywhere</i>
+  </header><br>
+  <div class="flexContainer">
+    <div class="card">
+      <h2>How to export a chat:</h2>
+      <div class="card lightCard">
+        <select data-switch-id="exportSwitch">
+          <option value="android">Instructions for Android</option>
+          <option value="ios">Instructions for iOS</option>
+          <option value="macos">Instructions for macOS</option>
+          <option value="other">Other devices</option>
+        </select><br>
+        <div data-switch-ref="exportSwitch" data-content="android">
+          <ol>
+            <li>Open the WhatsApp chat/group you want to export</li>
+            <li>Click on the three dots at the top-right of the chat</li>
+            <li>Click "More" -> "Export chat"</li>
+            <li>Choose to save the media files, and save the .zip file somewhere</li>
+          </ol>
+        </div>
+        <div data-switch-ref="exportSwitch" data-content="ios">
+          <ol>
+            <li>Open the WhatsApp chat/group you want to export</li>
+            <li>Tap the contact/group name, and then click on "Export chat"</li>
+            <li>Choose to attach the media files, and save the .zip file somewhere</li>
+          </ol>
+        </div>
+        <div data-switch-ref="exportSwitch" data-content="macos">
+          <ol>
+            <li>Right-click on the WhatsApp chat/group you want to export</li>
+            <li>Hover the "More" option, and then later click on the "Export chat" option</li>
+            <li>Attach the media files. The zip file will be saved in the Downloads folder.</li>
+          </ol>
+        </div>
+        <div data-switch-ref="exportSwitch" data-content="other">
+          <p>Currently, WhatsApp doesn't support exporting chat from other devices. Use a mobile device to continue.</p>
+        </div>
+      </div><br>
+      <p>Now, upload the zip file here to convert it to an HTML file. Don't worry, everything will be done locally and
+        nothing will be sent to an external server. You can also use this website offline by installing it as a
+        Progressive Web App.</p>
+    </div><br>
+    <div class="card">
+      <h2>Conversion options:</h2>
+      <div class="card lightCard">
+        <h3>Name options:</h3>
+        <label>
+          Your nickname on WhatsApp (used for custom bubble):
+          <input id="userName">
+        </label><br><br>
+        <label>File output name (If you leave this blank, the script will try its best to get a name): <input
+            type="text" id="fileName"></label><br>
+      </div><br>
+      <div class="card lightCard">
+        <h3>Exportation options:</h3>
+        <select id="base64Content">
+          <option value="relative">Keep relative path for files</option>
+          <option value="jskeep">Embed file content in JavaScript</option>
+          <option value="htmlkeep">Embed file content in JavaScript and in HTML (bigger file)</option>
+        </select><br><br>
+        <label>
+          Add <input type="number" value="-1" id="itemsPerFile"> messages per HTML file. Put a negative number if you
+          want
+          a
+          single file with all the chats
+        </label><br><br>
+        <select id="zipFile">
+          <option value="link">Download each HTML page</option>
+          <option value="zip">Add everything in a zip file</option>
+          <option value="fs" id="fileSystemApi">Save them directly on the File System [Will overwrite files with the
+            same
+            name!]</option>
+        </select>
+      </div><br>
+      <div class="card lightCard">
+        <h3>Language options:</h3>
+        <p>This webpage is also able to parse polls and events in the following languages: English; Italian. If you've
+          exported the file using WhatsApp on one of these languages, choose it below:</p>
+        <select id="language">
+          <option value="en">English</option>
+          <option value="it">Italian</option>
+        </select>
+        <p>If you've exported the WhatsApp file in another language, don't worry. The HTML file will work in any case.
+        </p>
+      </div><br>
+      <div style="display: flex; gap: 10px">
+        <button id="folderPicker">Choose folder</button>
+        <button id="zipPicker">Choose zip file</button>
+      </div>
+    </div><br>
+    <div class="card colorInput">
+      <h2>Custom style:</h2>
+      <label>
+        Accent color: <input type="color" data-color="accent">
+      </label>
+      <label>
+        Bubble color: <input type="color" data-color="card">
+      </label>
+      <label>
+        File color: <input type="color" data-color="input">
+      </label>
+      <label>
+        Background color: <input type="color" data-color="background">
+      </label>
+      <label>
+        Text color: <input type="color" data-color="text">
+      </label>
+      <label>
+        Font family: <input type="text" data-color="font">
+      </label>
+
+    </div><br>
+    <div class="card">
+      <h2>Redownload files:</h2>
+      <i>You can find here a list of the downloaded files. Click on them again to redownload them</i>
+      <ul id="redownloadList"></ul>
+    </div><br>
+  </div><br><br>
+  <i>WhatsApp is a trademark of Meta Platforms, which is in no way affiliated with this project. Usage of the zip
+    functions on this website is possible thanks to the <a href="https://github.com/Stuk/jszip" target="_blank">JSZip
+      library</a>, licensed under the MIT license. Icons from <a
+      href="https://github.com/microsoft/fluentui-system-icons" target="_blank">Microsoft's Fluent UI
+      Icons</a></i><br><br>
+  <a href="https://github.com/Dinoosauro/WhatsApp-to-HTML" target="_blank">View on GitHub</a>
+  <script>
+    const version = "1.0.0";
+    (async () => {
+      const result = await navigator.serviceWorker.register('./service-worker.js', { scope: window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1) });
+    })();
+    fetch("whatsapphtml-updatecode", { cache: "no-store" }).then((res) => res.text().then((text) => { if (text.replace("\n", "") !== version) if (confirm(`There's a new version of WhatsApp-to-HTML. Do you want to update? [${version} --> ${text.replace("\n", "")}]`)) { caches.delete("whatsapphtml-cache"); location.reload(true); } }).catch((e) => { console.error(e) })).catch((e) => console.error(e)); // Check if the application code is the same as the current application version and, if not, ask the user to update
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

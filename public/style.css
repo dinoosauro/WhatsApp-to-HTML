@@ -1,0 +1,170 @@
+:root {
+  --background: #151515;
+  --text: #fafafa;
+  --card: #313131;
+  --input: #515151;
+  --accent: #328d2b;
+  --font: "Work Sans", sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font);
+  padding: 0px 10px;
+}
+
+.card {
+  background-color: var(--card);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.lightCard,
+.colorInput>label {
+  background-color: var(--input);
+}
+
+.colorInput>label {
+  display: block;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.lightCard input,
+.lightCard select,
+.colorInput>label input {
+  background-color: var(--card);
+}
+
+.colorCard {
+  background-color: var(--input);
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+  display: block;
+}
+
+
+.bubble {
+  padding: 15px 10px;
+  border-radius: 8px;
+  width: 75vw;
+  margin: 8px 15px;
+}
+
+.bubble * {
+  white-space: pre-line;
+}
+
+.flLeft {
+  float: left;
+  background-color: var(--card);
+}
+
+.flRight {
+  float: right;
+  background-color: var(--accent);
+}
+
+img,
+video {
+  display: block;
+  border-radius: 8px;
+  width: fit-content;
+  max-width: calc(75vw - 10px);
+  height: 50vh;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.authorText {
+  font-size: 0.9em;
+  text-decoration: underline;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.backgroundImg {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.backgroundImg>img {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  max-width: 100vw;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  filter: blur(8px) brightness(75%);
+  -webkit-filter: blur(8px) brightness(75%);
+}
+
+a {
+  color: var(--text);
+}
+
+input,
+button,
+select {
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font);
+  background-color: var(--input);
+  border: 1px solid var(--text);
+}
+
+button {
+  background-color: var(--accent);
+}
+
+select,
+input[type=color],
+button,
+audio {
+  width: 100%;
+}
+
+input[type=color] {
+  height: 40px;
+}
+
+.pollOption {
+  height: 35px;
+  border-radius: 16px;
+  line-height: 35px;
+  margin-bottom: 10px;
+  padding: 0px 10px;
+}
+
+.eventInfoContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.eventInfoContainer>* {
+  margin: 0;
+}
+
+.flexContainer {
+  flex-wrap: wrap;
+  gap: 10px;
+  display: flex;
+}
+
+.flexContainer>* {
+  flex: 1 0 400px;
+}

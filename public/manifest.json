@@ -1,0 +1,16 @@
+{
+  "name": "WhatsApp to HTML",
+  "short_name": "WhatsApp to HTML",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#151515",
+  "theme_color": "#328d2b",
+  "orientation": "landscape-primary",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
