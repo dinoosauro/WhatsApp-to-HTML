@@ -19,7 +19,10 @@ import icons from "./icons";
     isMainUser: boolean,
   }
   interface Language {
-    it: string
+    it: string,
+    es: string,
+    de: string,
+    fr: string
   }
 
 
@@ -31,17 +34,20 @@ import icons from "./icons";
    * These are used to identify and fetch poll/event information
    */
   const WhatsAppStringTranslations = new Map<string, Language>([
-    ["WhatsApp Notification", { it: "Notifiche di WhatsApp" }],
-    [" POLL:\n", { it: " SONDAGGIO:\n" }],
-    ["\nOPTION: ", { it: "\nOPZIONE: " }],
-    [" vote", { it: " vot" }],
-    [" EVENT: ", { it: " EVENTO: " }],
-    ["Event Start time", { it: "Ora di inizio dell'evento" }],
-    ["\nEvent Start time: ", { it: "\nOra di inizio dell'evento: " }],
-    ["Event Cancelled:", { it: "Evento annullato:" }],
-    ["Event Description: ", { it: "Descrizione dell'evento: " }],
-    ["Event Join Link: ", { it: "Link di partecipazione all'evento: " }],
-    ["Event Location Name: ", { it: "Nome del luogo dell'evento: " }]
+    ["WhatsApp Notification", { it: "Notifiche di WhatsApp", es: "Notificación de WhatsApp", de: "WhatsApp-Benachrichtigung", fr: "Notification WhatsApp" }],
+    [" POLL:\n", { it: " SONDAGGIO:\n", es: " ENCUESTA:\n", de: " UMFRAGE:\n", fr: " SONDAGE  :\n" }],
+    ["\nOPTION: ", { it: "\nOPZIONE: ", es: "\nOPCIÓN: ", de: "\nOPTION: ", fr: "\nOPTION  : " }],
+    [" vote", { it: " vot", es: " vot", de: " Stimme", fr: "vote" }],
+    [" EVENT: ", { it: " EVENTO: ", es: " EVENTO: ", de: " EREIGNIS: ", fr: " ÉVÉNEMENT : " }],
+    ["Event Start time", { it: "Ora di inizio dell'evento", es: "Hora de inicio del evento", de: "Startzeit des Ereignisses", fr: "Heure de début de l’événement : " }],
+    ["\nEvent Start time: ", { it: "\nOra di inizio dell'evento: ", es: "\nHora de inicio del evento: ", de: "\nStartzeit des Ereignisses: ", fr: "\nHeure de début de l’événement : " }],
+    ["Event Cancelled:", { it: "Evento annullato:", es: "Evento cancelado:", de: "Ereignis abgesagt:", fr: "Événement annulé :" }],
+    ["Event Description: ", { it: "Descrizione dell'evento: ", es: "Descripción del evento: ", de: "Beschreibung des Ereignisses: ", fr: "Description de l’événement : " }],
+    ["Event Join Link: ", { it: "Link di partecipazione all'evento: ", es: "Enlace para unirse al evento ", de: "Beitrittslink des Ereignisses: ", fr: "Lien de participation à l’événement : " }],
+    ["Event Location Name: ", { it: "Nome del luogo dell'evento: ", es: "Nombre de la ubicación del evento: ", de: "Standortname des Ereignisses: ", fr: "Nom du lieu de l’événement : " }],
+    ["Event Location Point: ", { it: "Localizzazione dell'evento: ", es: "Ubicación del evento: ", de: "Genauer Standort des Ereignisses: ", fr: "Point de localisation de l’événement : " }],
+    ["Autodetected poll", { it: "Sondaggio rilevato automaticamente", es: "Encuesta detectada automáticamente", de: "Automatisch erkannte umfrage", fr: "Sondage détecté automatiquement" }],
+    ["Autodetected event", { it: "Evento rilevato automaticamente", es: "Evento detectado automáticamente", de: "Automatisch erkanntes ereignis", fr: "Événement détecté automatiquement" }]
   ]);
   let jsZip: JSZip;
   let fileHandle: FileSystemDirectoryHandle | undefined;
@@ -67,7 +73,16 @@ import icons from "./icons";
     for (const file of elements.filter(({ name }) => name.endsWith("txt"))) {
       const text = await file.text();
       const isMacVersion = (text.indexOf("[") === -1 ? Infinity : text.indexOf("[")) < text.indexOf(":");
-      arrStorage.push(...Array.from(text.matchAll(/\b\d{1,2}\b\/\d\d\/\d\d, \d\d:\d\d(:\d\d)?/gi)).map((item, i, arr) => { // So, the first number can also be of 1 digit, since... America 🦅🦅🦅 (Jk, on the English version of WhatsApp the format is MM/DD/YYYY, like the US one, and so if the message has been sent from January to September only the first digit will be written in the txt file)
+      /**
+       * So:
+       * - The US formats string as "M(M)/DD/YY": this means that from January to September only a number is shown as the month (in the first position).
+       * - However, this is done also by Spain, that follows the global DD/MM/YY syntax. So, also the second number can be of 1 or 2 digit.
+       * - Spain puts the hour number in 1-digit if possible. 
+       * - Germany uses "." instead of "/" for the date. 
+       * - France uses full year (YYYY).
+       * - The macOS versions export also the seconds of the message, so an optional (:\d\d) must be put at the end
+       */
+      arrStorage.push(...Array.from(text.matchAll(/\b\d{1,2}\b[\/.]\d{1,2}[\/.]\d{2,4}, \d{1,2}:\d\d(:\d\d)?/gi)).map((item, i, arr) => {
         /**
          * The item that needs to be analyzed.
          * What we do here is quite simple: we do a substring of the item by checking the start of the next Regex (obviously if that array entry exists)
@@ -101,8 +116,9 @@ import icons from "./icons";
       for (const { text, author, date, isMainUser } of arrStorage.slice(i, i + step)) {
         /**
          * WhatsApp sometimes puts the Left-to-Right or Right-to-Left Unicode character. We'll replace them only for looking to certain parts of the file.
+         * We later replace also the no-break space, that for some reason is added on German and French WhatsApp exports
          */
-        const textWithoutLeft = text.replace(/\u200e/g, "").replace(/\u200f/g, "").replace(/\r/, "");
+        const textWithoutLeft = text.replace(/\u200e/g, "").replace(/\u200f/g, "").replace(/\r/, "").replace(/\u00a0/g, " ");
 
         /**
          * The chat bubble that'll be displayed for this message
@@ -118,7 +134,7 @@ import icons from "./icons";
         bubble.append(authorText);
         const allowedFiles = elements.filter(file => text.indexOf(file.name) !== -1);
         if (textWithoutLeft.startsWith(getTranslatedItem(" POLL:\n")) && textWithoutLeft.indexOf(getTranslatedItem("\nOPTION: ")) !== -1) {
-          authorText.textContent += ` — Autodetected poll`;
+          authorText.textContent += ` — ${getTranslatedItem("Autodetected poll")}`;
           /**
            * The div that'll contain the poll info
            */
@@ -157,7 +173,7 @@ import icons from "./icons";
            */
           const eventContainer = document.createElement("div");
           eventContainer.classList.add("colorCard");
-          authorText.textContent += ` — Autodetected event`;
+          authorText.textContent += ` — ${getTranslatedItem("Autodetected event")}`;
           /**
            * The title of the event [also here the documentation is really useful, but at least it helps to divide the code in smaller segments (?)]
            */
@@ -354,6 +370,10 @@ import icons from "./icons";
       for (const options of document.querySelectorAll(`[data-switch-ref="${attribute}"]`)) (options as HTMLElement).style.display = options.getAttribute("data-content") === (select as HTMLSelectElement).value ? "block" : "none"; // [data-switch-ref] indicates the divs that needs to be shown or hidden
     })
     select.dispatchEvent(new Event("change"));
+  }
+  for (const item of Array.from(document.querySelectorAll("#language > option")).map(item => (item as HTMLOptionElement).value)) { // We get all the available languages from the select. If the browser's language is one of these ones, it'll be automatically set.
+    if (navigator.language.startsWith(item)) (document.getElementById("language") as HTMLSelectElement).value = item;
+    break;
   }
   (document.getElementById("language") as HTMLSelectElement).value = navigator.language.startsWith("it") ? "it" : "en";
   /**

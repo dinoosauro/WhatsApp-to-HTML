@@ -31,9 +31,9 @@ Now, you need to choose the conversion options:
   - By putting `Embed file content in JavaScript`, the files will be included in
     a JavaScript object. This means that the images/videos/audios/files can be
     displayed and downloaded even if you keep only the output HTML file
-  - By putting `Embed file content in JavaScript and HTML (bigger file)`, the
-    files will be included directly in the HTML. This will increase the file
-    size, since sometimes the files are sent multiple times.
+  - By putting `Embed file content in HTML (bigger file)`, the files will be
+    included directly in the HTML. This will increase the file size, since
+    sometimes the files are sent multiple times.
 - You can choose to add _x_ messages per HTML file. In case the chat will have
   more than _x_ messages, multiple HTML files will be downloaded
 - You can choose to download the file:
