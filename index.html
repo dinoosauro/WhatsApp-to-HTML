@@ -98,7 +98,7 @@
       </div><br>
       <div class="card lightCard">
         <h3>Language options:</h3>
-        <p>This webpage is also able to parse polls and events in the following languages: English; Italian. If you've
+        <p>This webpage is also able to parse polls and events in the following languages: English; Italian; Español; Deutsch; French. If you've
           exported the file using WhatsApp on one of these languages, choose it below:</p>
         <select id="language">
           <option value="en">English</option>
@@ -150,7 +150,7 @@
       Icons</a></i><br><br>
   <a href="https://github.com/Dinoosauro/WhatsApp-to-HTML" target="_blank">View on GitHub</a>
   <script>
-    const version = "1.0.0";
+    const version = "1.0.1";
     (async () => {
       const result = await navigator.serviceWorker.register('./service-worker.js', { scope: window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1) });
     })();

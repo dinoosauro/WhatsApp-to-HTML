@@ -234,7 +234,9 @@ import icons from "./icons";
                 read.readAsDataURL(allowedFile);
               });
             }
-            for (const textToKeep of text.split(allowedFile.name)) { // Here we'll create a label for the text before the file name, and then we'll add a div where the user can display/download the file
+            let textSplit = text.split(allowedFile.name);
+            const lastText = textSplit.pop(); // The text after the last reference to the file should be added at the end, since otherwise the bubble would be added one last time at the end.
+            for (const textToKeep of textSplit) { // Here we'll create a label for the text before the file name, and then we'll add a div where the user can display/download the file
               const label = document.createElement("label");
               label.textContent = textToKeep;
               bubble.append(label);
@@ -270,10 +272,18 @@ import icons from "./icons";
                   case "htmlkeep":
                     fileDiv.href = base64Storage[allowedFile.name];
                     fileDiv.download = allowedFile.name;
+                    break;
+                  default:
+                    fileDiv.href = `./${allowedFile.name}`;
+                    break;
                 }
                 bubble.append(fileDiv);
               }
             }
+            // And now we'll add the text after the last reference to the file
+            const label = document.createElement("label");
+            label.textContent = lastText as string;
+            bubble.append(label);
           }
           if (allowedFiles.length === 0) { // Create a label for all the text, since the loop before didn't run
             const label = document.createElement("label");
@@ -290,7 +300,7 @@ import icons from "./icons";
         jsonScript.id = "base64";
         container.append(jsonScript);
       }
-      await downloadFile(new Blob([`<!DOCTYPE html><head><style>${await ((await fetch("./style.css")).text())}</style><body style="${Array.from(document.querySelectorAll("[data-color]")).map(item => `--${item.getAttribute("data-color")}: ${(item as HTMLInputElement).value.replace(/\"/g, "'")}`).join(";")}">${container.outerHTML}<script>${await (((await fetch("./loadContent.js")).text()))}</script></body>`]), `[${i}-${Math.min(i + step, arrStorage.length)}] ${(document.getElementById("fileName") as HTMLInputElement).value || arrStorage.find(user => !user.isMainUser)?.author || arrStorage[0].author}.html`)
+      await downloadFile(new Blob([`<!DOCTYPE html><head><meta charset="UTF-8"><style>${await ((await fetch("./style.css")).text())}</style><body style="${Array.from(document.querySelectorAll("[data-color]")).map(item => `--${item.getAttribute("data-color")}: ${(item as HTMLInputElement).value.replace(/\"/g, "'")}`).join(";")}">${container.outerHTML}<script>${await (((await fetch("./loadContent.js")).text()))}</script></body>`]), `[${i}-${Math.min(i + step, arrStorage.length)}] ${(document.getElementById("fileName") as HTMLInputElement).value || arrStorage.find(user => !user.isMainUser)?.author || arrStorage[0].author}.html`)
     }
     (document.getElementById("zipFile") as HTMLSelectElement).value === "zip" && downloadFile(await jsZip.generateAsync({ type: "blob" }), `${(document.getElementById("fileName") as HTMLInputElement).value || arrStorage.find(user => !user.isMainUser)?.author || arrStorage[0].author}.zip`, true);
   }
